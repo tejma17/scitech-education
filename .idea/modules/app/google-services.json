@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "280127296456",
+    "firebase_url": "https://preparation-210c3.firebaseio.com",
+    "project_id": "preparation-210c3",
+    "storage_bucket": "preparation-210c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280127296456:android:a0e8ede94de93bb4a4a6fd",
+        "android_client_info": {
+          "package_name": "com.example.mypreparation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280127296456-c8sht88q3vh3urtcm8khttsn1urek11p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mypreparation",
+            "certificate_hash": "f3292faf235c116be2ce99a54e46842a241570a7"
+          }
+        },
+        {
+          "client_id": "280127296456-usdekb2057mb8nrc7kv8mpu7c801quvf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZTWCRgSOMe-hJpP-tpA010bofxlzJBmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280127296456-usdekb2057mb8nrc7kv8mpu7c801quvf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

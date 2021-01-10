@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Quizzes">
+
+    <fragment
+        android:id="@+id/ar_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.tejMa.mypreparation.CustomArFragment"/>
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/scitechar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/scan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:elevation="3dp"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/scan_ar"/>
+
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:elevation="4dp"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp"
+        android:gravity="center"
+        android:background="#92000000"
+        android:text="Point the camera towards figure"
+        android:fontFamily="@font/convergence"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"/>
+
+
+</RelativeLayout>

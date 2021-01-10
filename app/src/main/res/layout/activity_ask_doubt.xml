@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:transitionName="newDoubt"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:fontFamily="@font/convergence"
+            android:textColor="@color/select"
+            android:textStyle="bold"
+            android:text="@string/ask_experts"
+            android:layout_margin="20dp"/>
+
+        <Button
+            android:id="@+id/chapter"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/outline"
+            android:text="@string/select_a_chapter"
+            android:textColor="@color/set_text"
+            android:gravity="start|center_vertical"
+            android:paddingStart="10dp"
+            android:fontFamily="@font/convergence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/question"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="20dp"
+                android:gravity="top"
+                android:padding="10dp"
+                android:background="@drawable/outline"
+                android:hint="@string/describe_your_question_here"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/set_text"
+                android:textSize="18sp"
+                android:fontFamily="@font/convergence"/>
+
+        <Button
+            android:id="@+id/submit_doubt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:fontFamily="@font/convergence"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/background"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/oval"
+            android:text="@string/submit"/>
+
+    </LinearLayout>
+
+</ScrollView>
