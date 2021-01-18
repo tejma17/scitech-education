@@ -11,4 +11,4 @@ SciTech Education is an online learning platform for students of class 8-10th st
 
 Java for backend | XML for frontend | Firebase realtime database
 
-Play store link: https://play.google.com/store/apps/details?id=com.tejMa.mypreparation
+Available on [Google Play Store](https://play.google.com/store/apps/details?id=com.tejMa.mypreparation) 
