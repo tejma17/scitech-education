@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.adapters;
 
 
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.tejMa.mypreparation.R;
 
 import java.io.IOException;
 import java.io.InputStream;

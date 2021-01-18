@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/convergence"
+        android:textSize="17sp"
+        android:padding="10dp"
+        android:textColor="@color/set_text"
+        android:layout_marginTop="30dp"
+        android:id="@+id/info"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/outline"
+        android:textColorHint="@color/text_hint"
+        android:hint="Results will appear here"/>
+
+
+
+    <Button
+        android:id="@+id/go"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GO TO WEBSITE"
+        android:textStyle="bold"
+        android:layout_below="@id/info"
+        android:background="@drawable/oval"
+        android:layout_margin="30dp"
+        app:cornerRadius="20dp"
+        android:fontFamily="@font/convergence"
+        android:textColor="@color/background"
+        android:textSize="18sp"/>
+
+</RelativeLayout>

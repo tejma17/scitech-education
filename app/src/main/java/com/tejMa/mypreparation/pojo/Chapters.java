@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.pojo;
 
 public class Chapters {
     private String name;

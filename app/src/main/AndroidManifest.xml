@@ -74,7 +74,7 @@
             android:value="optional" />
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -92,7 +92,7 @@
         </provider>
 
         <service
-            android:name=".GettingDeviceTokenService"
+            android:name=".service.GettingDeviceTokenService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

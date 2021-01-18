@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.tejMa.mypreparation.Quizzes;
+import com.tejMa.mypreparation.R;
 
 import java.util.Objects;
 

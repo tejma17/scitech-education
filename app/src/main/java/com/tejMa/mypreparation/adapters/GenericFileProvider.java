@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.adapters;
 
 import androidx.core.content.FileProvider;
 

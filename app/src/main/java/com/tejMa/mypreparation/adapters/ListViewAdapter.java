@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.adapters;
 
 import android.content.Context;
 import android.text.Html;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.pojo.Chapters;
 
 import java.util.ArrayList;
 
