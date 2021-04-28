@@ -3,6 +3,8 @@
     <color name="colorPrimary">#1F2323</color>
     <color name="colorPrimaryDark">#2C2C2C</color>
     <color name="colorAccent">#FDD835</color>
+    <color name="purple_light">#E2CBFF</color>
+    <color name="black">#FF000000</color>
     <color name="background">#1F2323</color>
     <color name="set_text">#E8DDDD</color>
     <color name="text_hint">#B5AFAF</color>

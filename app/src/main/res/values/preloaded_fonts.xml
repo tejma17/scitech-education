@@ -6,5 +6,6 @@
         <item>@font/bree_serif</item>
         <item>@font/capriola</item>
         <item>@font/convergence</item>
+            <item>@font/varela_round</item>
     </array>
 </resources>

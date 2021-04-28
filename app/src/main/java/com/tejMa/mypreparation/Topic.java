@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
@@ -47,7 +48,7 @@ public class Topic extends AppCompatActivity {
     DatabaseReference databaseReference;
     ListViewAdapter adapter;
     SharedPreferences sharedPreferences;
-    String lang;
+    String lang, path;
     File file;
     boolean doubts = false;
 
@@ -75,7 +76,8 @@ public class Topic extends AppCompatActivity {
 
         Intent intent = getIntent();
         String[] info;
-        info = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).getString("ChapName")).split("TEJMA");
+        path = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).getString("ChapName"));
+        info = path.split("TEJMA");
 
         actionBar.setTitle(info[3]);
 
@@ -94,7 +96,13 @@ public class Topic extends AppCompatActivity {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Chapters chap1 = new Chapters(dataSnapshot.getKey(), Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                String key = dataSnapshot.getKey();
+                Chapters chap1;
+                if(key.startsWith("@@")){
+                    String tempKey = key.replace("@@", "");
+                    chap1 = new Chapters(tempKey, 1, Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                } else
+                    chap1 = new Chapters(key, 0, Objects.requireNonNull(dataSnapshot.getValue()).toString());
                 if(doubts) {
                     String answ = Objects.requireNonNull(dataSnapshot.child("ans").getValue()).toString();
                     answ = answ.replaceAll("\n", "\n");
@@ -126,6 +134,7 @@ public class Topic extends AppCompatActivity {
             }
         });
 
+
         //listView actions
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Chapters chap = (Chapters) listView.getItemAtPosition(position);
@@ -149,7 +158,11 @@ public class Topic extends AppCompatActivity {
                 d.putExtra("DoubtID", info[3]+"TEJMA"+name);
                 startActivity(d);
             }
-            else {
+            else if(chap.getType()==1){
+                Intent intent1 = new Intent(getApplicationContext(), CustomQuizActivity.class);
+                intent1.putExtra("PATH", path+"TEJMA@@"+name);
+                startActivity(intent1);
+            } else {
                 Intent intent1 = new Intent(getApplicationContext(), WebShow.class);
                 intent1.putExtra("TestID", name+"TEJMA"+link);
                 startActivity(intent1);

@@ -3,11 +3,15 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#2C2C2C</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="purple_light">#E2CBFF</color>
     <color name="background">#FFFFFF</color>
+    <color name="black">#FF000000</color>
     <color name="set_text">#000000</color>
     <color name="text_hint">#706A6A</color>
     <color name="transparent">#00000000</color>
     <color name="select">#D81B60</color>
     <color name="list">#EDEDED</color>
     <color name="online">#388E3C</color>
+    <color name="right">#A5D6A7</color>
+    <color name="wrong">#F48FB1</color>
 </resources>
