@@ -63,4 +63,5 @@
     <string name="weak_network_connection">Poor Network Connection</string>
     <string name="answer">Answer:</string>
     <string name="QR">QR</string>
+    <string name="title_zoomclient">Zoom Meetings</string>
 </resources>

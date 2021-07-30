@@ -1,25 +1,21 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
 
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.ar.core.ArCoreApk;
-
-import java.util.Objects;
+import com.tejMa.mypreparation.R;
 
 public class ArLaunch extends AppCompatActivity {
 

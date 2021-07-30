@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,7 +8,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,11 +19,13 @@ import android.os.Vibrator;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.zxing.Result;
+import com.tejMa.mypreparation.R;
 
 import java.util.Objects;
 
@@ -46,6 +47,11 @@ public class QRScan extends AppCompatActivity implements ZXingScannerView.Result
                 ActivityCompat.requestPermissions(QRScan.this, new String[]{Manifest.permission.CAMERA}, 101);
             }
         }
+
+        //Ads
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;

@@ -11,14 +11,21 @@
         app:cardCornerRadius="10dp"
         android:background="@drawable/back"
         android:layout_marginHorizontal="10dp">
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:transitionName="topic"
-        android:paddingHorizontal="10dp"
         android:background="@drawable/back">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:scaleType="fitXY"
+            android:id="@+id/qureka_ad"/>
+
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
@@ -29,7 +36,12 @@
             android:maxLines="1"
             android:textColor="@color/background"
             android:fontFamily="@font/convergence"
-            android:text="Title" />
+            android:text="Title"
+            android:paddingHorizontal="10dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
@@ -38,9 +50,26 @@
             android:textStyle="bold"
             android:layout_marginTop="3dp"
             android:text="Desc"
-            android:textColor="@color/list"/>
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"/>
 
-    </LinearLayout>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/new_label"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:visibility="visible"
+            app:lottie_rawRes="@raw/new_label"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            android:cropToPadding="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
    </androidx.cardview.widget.CardView>
 

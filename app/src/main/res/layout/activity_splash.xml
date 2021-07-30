@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#212829"
-    tools:context=".Splash">
+    tools:context=".activities.Splash">
 
 
     <ImageView
         android:contentDescription="@string/green_line"
         android:id="@+id/greenline"
-        android:layout_width="15dp"
-        android:layout_height="145dp"
+        android:layout_width="10dp"
+        android:layout_height="115dp"
         android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/redline"
         android:background="@drawable/green_line" />
@@ -20,8 +20,8 @@
     <ImageView
         android:contentDescription="@string/red_line"
         android:id="@+id/redline"
-        android:layout_width="15dp"
-        android:layout_height="200dp"
+        android:layout_width="10dp"
+        android:layout_height="150dp"
         android:layout_marginEnd="30dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/red_line" />
@@ -29,8 +29,8 @@
     <ImageView
         android:contentDescription="@string/red_line"
         android:id="@+id/redbottom"
-        android:layout_width="15dp"
-        android:layout_height="200dp"
+        android:layout_width="10dp"
+        android:layout_height="150dp"
         android:layout_marginStart="30dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/red_line" />
@@ -38,8 +38,8 @@
     <ImageView
         android:contentDescription="@string/green_line"
         android:id="@+id/greenbottom"
-        android:layout_width="15dp"
-        android:layout_height="145dp"
+        android:layout_width="10dp"
+        android:layout_height="115dp"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_toEndOf="@+id/redbottom"
@@ -47,6 +47,7 @@
 
 
     <LinearLayout
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -74,6 +75,14 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/name"
+        android:layout_marginTop="24dp"/>
 
 
 </RelativeLayout>

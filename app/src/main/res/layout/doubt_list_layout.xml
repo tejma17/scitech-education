@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="110dp"
         app:cardCornerRadius="10dp"
-        android:background="@drawable/back"
+        android:background="@drawable/dark2"
         android:layout_marginHorizontal="10dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,14 @@
         android:gravity="top"
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
-        android:background="@drawable/back">
+        android:background="@drawable/dark2">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:id="@+id/qureka_ad"/>
+
         <TextView
             android:id="@+id/title"
             android:layout_marginTop="10dp"
@@ -27,7 +34,7 @@
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/background"
+            android:textColor="#FFFFFF"
             android:fontFamily="@font/convergence"
             android:text="Title" />
         <TextView
@@ -41,7 +48,20 @@
             android:textStyle="bold"
             android:layout_marginTop="3dp"
             android:text="Desc"
-            android:textColor="@color/list"/>
+            android:textColor="#EDEDED"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/new_label"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/new_label"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:cropToPadding="true"/>
+
     </LinearLayout>
 
    </androidx.cardview.widget.CardView>

@@ -5,6 +5,13 @@
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="2dp"
+        android:scaleType="fitXY"
+        android:id="@+id/qureka_ad"/>
+
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"

@@ -3,7 +3,12 @@ package com.tejMa.mypreparation.pojo;
 public class Chapters {
     private String name;
     private int type;
+    private int isNew;
+    private int image;
     private String description;
+
+    public Chapters() {
+    }
 
     public Chapters(String name, String description) {
         this.name = name;
@@ -14,6 +19,29 @@ public class Chapters {
         this.name = name;
         this.type = type;
         this.description = description;
+    }
+
+    public Chapters(String name, String description, int isNew) {
+        this.name = name;
+        this.isNew = isNew;
+        this.description = description;
+    }
+
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
+
+    public int isNew() {
+        return isNew;
+    }
+
+    public void setNew(int aNew) {
+        isNew = aNew;
     }
 
     public int getType() {

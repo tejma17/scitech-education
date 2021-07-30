@@ -1,7 +1,8 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -9,11 +10,26 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.play.core.splitinstall.SplitInstallManager;
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory;
+import com.google.android.play.core.splitinstall.SplitInstallRequest;
+import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener;
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode;
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus;
+import com.google.android.play.core.tasks.OnSuccessListener;
 
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
+import com.tejMa.mypreparation.BuildConfig;
+import com.tejMa.mypreparation.fragments.Doubts;
+import com.tejMa.mypreparation.fragments.Quizzes;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.fragments.Settings;
+import com.tejMa.mypreparation.fragments.ShowNotes;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -26,12 +42,15 @@ public class Navigation extends AppCompatActivity {
     SpaceOnClickListener spaceOnClickListener;
     boolean homeActive = true;
     boolean doubleBackToExitPressedOnce = false;
+    private int mySessionId = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+
+        Log.d("AASSDDSSDD", "IN NAV");
 
         sharedPreferences = getSharedPreferences("Language", MODE_PRIVATE);
         lang = sharedPreferences.getString("Language", "English");

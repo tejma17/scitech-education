@@ -25,28 +25,31 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
-        <activity android:name=".CustomQuizActivity" />
-        <activity android:name=".QRScan" />
+        <activity android:name=".activities.CustomQuizActivity" />
+        <activity android:name=".activities.QRScan" />
         <activity
-            android:name=".Navigation"
-            android:configChanges="locale"
-            android:maxRecents="0"></activity>
+            android:name=".activities.Navigation"
+            android:configChanges="locale">
+        </activity>
         <activity
-            android:name=".ArScan"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".activities.ArScan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
-            android:name=".ArLaunch"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".AskDoubt" />
-        <activity android:name=".DoubtInfo" />
-        <activity android:name=".Instructions" />
+            android:name=".activities.ArLaunch"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".activities.AskDoubt" />
+        <activity android:name=".activities.DoubtInfo" />
+        <activity android:name=".activities.Instructions" />
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".activities.WelcomeActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".HelpSection" />
+        <activity android:name=".activities.HelpSection" />
         <activity
-            android:name=".Splash"
+            android:name=".activities.Splash"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,9 +57,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebShow" />
-        <activity android:name=".Topic" />
-        <activity android:name=".About" />
+        <activity android:name=".activities.WebShow" />
+        <activity android:name=".fragments.Topic" />
+        <activity android:name=".activities.About" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -85,6 +88,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3015278233978080~3378365472"/>
 
         <service
             android:name=".service.GettingDeviceTokenService"

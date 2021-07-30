@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -6,12 +6,17 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.MobileAds;
+import com.tejMa.mypreparation.R;
 
 import java.util.Objects;
 
@@ -30,6 +35,9 @@ public class Splash extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        Log.d("AASSDDSSDD", "AT START");
+
 
         textView = findViewById(R.id.appname);
         imageView = findViewById(R.id.logo);
@@ -52,18 +60,21 @@ public class Splash extends AppCompatActivity {
             }
         }
 
-        String theme = sharedPreferences.getString("Theme", "Light");
-        if(theme==null){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        }
-        if(Objects.requireNonNull(theme).equals("Dark"))
-        {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        else if(theme.equals("Light"))
-        {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+//        String theme = sharedPreferences.getString("Theme", "Light");
+//        if(theme==null){
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+//        }
+//        if(Objects.requireNonNull(theme).equals("Dark"))
+//        {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//        }
+//        else if(theme.equals("Light"))
+//        {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//        }
+
+        Log.d("AASSDDSSDD", "CONF CHANGE");
+
 
         top = AnimationUtils.loadAnimation(this, R.anim.top_animation);
         bottom = AnimationUtils.loadAnimation(this, R.anim.bot_animation);
@@ -74,10 +85,15 @@ public class Splash extends AppCompatActivity {
         red2.setAnimation(bottom);
         green2.setAnimation(bottom);
 
-        new Handler().postDelayed(() -> {
+        ProgressBar progressBar = findViewById(R.id.progress);
+        progressBar.setVisibility(View.VISIBLE);
+
+        MobileAds.initialize(this, initializationStatus -> {
             startActivity(intent);
+            progressBar.setVisibility(View.GONE);
+            Log.d("AASSDDSSDD", "BEFORE FINISH");
             finish();
-        },1500);
+        });
     }
 
 }

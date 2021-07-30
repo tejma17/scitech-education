@@ -5,25 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/list"
-    tools:context=".Settings">
+    tools:context=".fragments.Settings">
 
 
     <ListView
         android:id="@+id/settingView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="110dp"
         android:layout_marginHorizontal="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:divider="@color/text_hint"
         android:dividerHeight="0.5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.006" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_marginBottom="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3015278233978080/6939596998"
+        ads:layout_constraintBottom_toTopOf="@id/labeled">
+    </com.google.android.gms.ads.AdView>
 
     <LinearLayout
+        android:id="@+id/labeled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -36,7 +45,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="v 3.0.2"
+        android:text="v 4.1.0"
         android:layout_weight="1"
         android:gravity="center"
         android:textSize="15sp"

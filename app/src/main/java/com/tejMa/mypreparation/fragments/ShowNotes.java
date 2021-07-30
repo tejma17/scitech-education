@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,15 +32,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.activities.QRScan;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Video extends Fragment {
+public class ShowNotes extends Fragment {
 
-    ListView video_list;
+    ListView note_list;
     LottieAnimationView coming;
     DatabaseReference reference;
     public ArrayList<Chapters> demo;
@@ -55,10 +58,10 @@ public class Video extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_notes, container, false);
         ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-        Objects.requireNonNull(actionBar).setTitle(R.string.video_lectures);
+        Objects.requireNonNull(actionBar).setTitle(R.string.notes);
         setHasOptionsMenu(true);
 
-        video_list = view.findViewById(R.id.notes);
+        note_list = view.findViewById(R.id.notes);
         coming = view.findViewById(R.id.coming);
         demo = new ArrayList<>();
         notes = view.findViewById(R.id.note_button);
@@ -67,16 +70,22 @@ public class Video extends Fragment {
         animationView.setVisibility(View.VISIBLE);
         coming.setVisibility(View.GONE);
         adapter = new ListViewAdapter(Objects.requireNonNull(getContext()), R.layout.chap_list_layout, demo);
-        video_list.setAdapter(adapter);
+        note_list.setAdapter(adapter);
+        TextView poor;
+        poor = view.findViewById(R.id.poor);
 
         //check connection
         if(isConnection()) {
             animationView.setAnimation(R.raw.load);
         } else{
+            new Handler().postDelayed(() -> {
+                poor.setVisibility(View.VISIBLE);
+            },10000);
             animationView.setAnimation(R.raw.no_connection);
             coming.setVisibility(View.GONE);
         }
 
+        notes.setTextColor(getResources().getColor(R.color.select));
         notes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +97,6 @@ public class Video extends Fragment {
             }
         });
 
-        videos.setTextColor(getResources().getColor(R.color.select));
         videos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,18 +108,18 @@ public class Video extends Fragment {
             }
         });
 
-
         sharedPreferences = getActivity().getSharedPreferences("Language", Context.MODE_PRIVATE);
         lang = sharedPreferences.getString("Language", "English");
         std = sharedPreferences.getString("Class", "10");
 
-        reference = FirebaseDatabase.getInstance().getReference("Videos/"+std+"/"+lang);
+        reference = FirebaseDatabase.getInstance().getReference("Notes/"+std+"/"+lang);
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() == 0) {
                     animationView.setVisibility(View.INVISIBLE);
                     coming.setVisibility(View.VISIBLE);
+                    poor.setVisibility(View.GONE);
                 }
             }
             @Override
@@ -126,17 +134,19 @@ public class Video extends Fragment {
                 Chapters chap1;
                 if(marathi){
                     if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" तासिका");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" नोट");
                     else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" तासिका");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" नोट्स");
                 }else {
                     if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Lecture");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Note");
                     else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Lectures");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Notes");
                 }
                 demo.add(chap1);
                 adapter.notifyDataSetChanged();
+
+
                 animationView.setVisibility(View.INVISIBLE);
             }
 
@@ -161,14 +171,16 @@ public class Video extends Fragment {
             }
         });
 
-        video_list.setOnItemClickListener((parent, view, position, id) -> {
+        note_list.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getContext(), Topic.class);
-            Chapters chap = (Chapters) video_list.getItemAtPosition(position);
+            Chapters chap = (Chapters) note_list.getItemAtPosition(position);
             String Chapter = chap.getName();
-            intent.putExtra("ChapName", "VideosTEJMA"+std+"TEJMA"+lang+"TEJMA"+Chapter);
+            intent.putExtra("ChapName", "NotesTEJMA"+std+"TEJMA"+lang+"TEJMA"+Chapter);
             startActivity(intent);
         });
-        return view;
+
+
+       return view;
     }
 
     public boolean isConnection(){
@@ -183,6 +195,7 @@ public class Video extends Fragment {
 
         MenuItem item = menu.findItem(R.id.search);
         MenuItem help = menu.findItem(R.id.help);
+        help.setVisible(false);
         MenuItem qr = menu.findItem(R.id.qr);
         qr.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -191,7 +204,7 @@ public class Video extends Fragment {
                 return true;
             }
         });
-        help.setVisible(false);
+
 
         SearchView searchView = (SearchView) item.getActionView();
 
@@ -214,7 +227,7 @@ public class Video extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 if(TextUtils.isEmpty(newText)) {
                     adapter.filter("");
-                    video_list.clearTextFilter();
+                    note_list.clearTextFilter();
                 }
                 else {
                     adapter.filter(newText);
@@ -224,4 +237,5 @@ public class Video extends Fragment {
         });
 
     }
+
 }

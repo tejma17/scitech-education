@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background"
         android:orientation="vertical"
-        tools:context=".HelpSection">
+        tools:context=".activities.HelpSection">
 
         <TextView
             android:layout_width="wrap_content"

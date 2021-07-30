@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +27,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.activities.CustomQuizActivity;
+import com.tejMa.mypreparation.activities.DoubtInfo;
+import com.tejMa.mypreparation.activities.WebShow;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
@@ -51,6 +56,7 @@ public class Topic extends AppCompatActivity {
     String lang, path;
     File file;
     boolean doubts = false;
+    AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,10 @@ public class Topic extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
 
         ActivityCompat.requestPermissions(Topic.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         names_test.clear();
         listView = findViewById(R.id.list);
@@ -97,19 +107,31 @@ public class Topic extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String key = dataSnapshot.getKey();
+                String value = dataSnapshot.getValue().toString();
+                int isNew = 0;
+                if(value.startsWith("(NEW)")) {
+                    value = value.replace("(NEW)", "");
+                    isNew = 1;
+                }
+
                 Chapters chap1;
                 if(key.startsWith("@@")){
                     String tempKey = key.replace("@@", "");
-                    chap1 = new Chapters(tempKey, 1, Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                    chap1 = new Chapters(tempKey, 1, value);
                 } else
-                    chap1 = new Chapters(key, 0, Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                    chap1 = new Chapters(key, 0, value);
+
+                chap1.setNew(isNew);
+
                 if(doubts) {
                     String answ = Objects.requireNonNull(dataSnapshot.child("ans").getValue()).toString();
                     answ = answ.replaceAll("\n", "\n");
                     answ = answ.replaceAll("_dot_", "\u25CF");
-                    chap1 = new Chapters(dataSnapshot.getKey(), answ);
+                    chap1 = new Chapters(dataSnapshot.getKey(), answ, 0);
                 }
-                names_test.add(chap1);
+
+                if(!key.equals("new"))
+                    names_test.add(chap1);
                 adapter.notifyDataSetChanged();
             }
 

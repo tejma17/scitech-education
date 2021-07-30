@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
-    tools:context=".ArLaunch">
+    tools:context=".activities.ArLaunch">
 
     <ImageView
         android:layout_width="270dp"

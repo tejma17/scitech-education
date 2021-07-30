@@ -1,26 +1,30 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,15 +36,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.activities.AskDoubt;
+import com.tejMa.mypreparation.activities.QRScan;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ShowNotes extends Fragment {
+public class Doubts extends Fragment {
 
-    ListView note_list;
+    ListView doubt_list;
     LottieAnimationView coming;
     DatabaseReference reference;
     public ArrayList<Chapters> demo;
@@ -48,29 +55,30 @@ public class ShowNotes extends Fragment {
     LottieAnimationView animationView;
     SharedPreferences sharedPreferences;
     String std, lang;
+    FloatingActionButton ask;
     View view;
-    private Button notes, videos;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_notes, container, false);
+        view =  inflater.inflate(R.layout.fragment_doubts, container, false);
         ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-        Objects.requireNonNull(actionBar).setTitle(R.string.notes);
+        Objects.requireNonNull(actionBar).setTitle(R.string.doubts);
         setHasOptionsMenu(true);
 
-        note_list = view.findViewById(R.id.notes);
+        doubt_list = view.findViewById(R.id.notes);
         coming = view.findViewById(R.id.coming);
         demo = new ArrayList<>();
-        notes = view.findViewById(R.id.note_button);
-        videos = view.findViewById(R.id.video_button);
         animationView = view.findViewById(R.id.anim);
         animationView.setVisibility(View.VISIBLE);
         coming.setVisibility(View.GONE);
         adapter = new ListViewAdapter(Objects.requireNonNull(getContext()), R.layout.chap_list_layout, demo);
-        note_list.setAdapter(adapter);
+        doubt_list.setAdapter(adapter);
+        ask = view.findViewById(R.id.ask);
         TextView poor;
         poor = view.findViewById(R.id.poor);
+
+
 
         //check connection
         if(isConnection()) {
@@ -83,34 +91,41 @@ public class ShowNotes extends Fragment {
             coming.setVisibility(View.GONE);
         }
 
-        notes.setTextColor(getResources().getColor(R.color.select));
-        notes.setOnClickListener(new View.OnClickListener() {
+        //ask doubt
+        ask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container,
-                                new ShowNotes()).commit();
-                notes.setTextColor(getResources().getColor(R.color.select));
-                videos.setTextColor(getResources().getColor(R.color.set_text));
+                Pair[] pairs = new Pair[1];
+                pairs[0] = new Pair<View, String>(ask, "newDoubt");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs);
+                startActivity(new Intent(getContext(), AskDoubt.class), options.toBundle());
             }
         });
 
-        videos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container,
-                                new Video()).commit();
-                videos.setTextColor(getResources().getColor(R.color.select));
-                notes.setTextColor(getResources().getColor(R.color.set_text));
-            }
-        });
+        sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("Language", Context.MODE_PRIVATE);
+
+        int count = sharedPreferences.getInt("Count", 0);
+        if(count == 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogStyle);
+            builder.setTitle(getResources().getString(R.string.doubt_session));
+            builder.setMessage(getResources().getString(R.string.warn_doubt));
+            builder.setNegativeButton(getResources().getString(R.string.gotit),new DialogInterface.OnClickListener(){
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+            count++;
+            sharedPreferences.edit().putInt("Count", count).apply();
+        }
+
 
         sharedPreferences = getActivity().getSharedPreferences("Language", Context.MODE_PRIVATE);
         lang = sharedPreferences.getString("Language", "English");
         std = sharedPreferences.getString("Class", "10");
 
-        reference = FirebaseDatabase.getInstance().getReference("Notes/"+std+"/"+lang);
+        reference = FirebaseDatabase.getInstance().getReference("Doubts/"+std+"/"+lang);
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -131,20 +146,15 @@ public class ShowNotes extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Chapters chap1;
                 if(marathi){
-                    if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" नोट");
-                    else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" नोट्स");
+                    chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" शंका");
                 }else {
                     if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Note");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Thread");
                     else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Notes");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Threads");
                 }
                 demo.add(chap1);
                 adapter.notifyDataSetChanged();
-
-
                 animationView.setVisibility(View.INVISIBLE);
             }
 
@@ -169,16 +179,14 @@ public class ShowNotes extends Fragment {
             }
         });
 
-        note_list.setOnItemClickListener((parent, view, position, id) -> {
+        doubt_list.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getContext(), Topic.class);
-            Chapters chap = (Chapters) note_list.getItemAtPosition(position);
+            Chapters chap = (Chapters) doubt_list.getItemAtPosition(position);
             String Chapter = chap.getName();
-            intent.putExtra("ChapName", "NotesTEJMA"+std+"TEJMA"+lang+"TEJMA"+Chapter);
+            intent.putExtra("ChapName", "DoubtsTEJMA"+std+"TEJMA"+lang+"TEJMA"+Chapter);
             startActivity(intent);
         });
-
-
-       return view;
+        return view;
     }
 
     public boolean isConnection(){
@@ -225,7 +233,7 @@ public class ShowNotes extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 if(TextUtils.isEmpty(newText)) {
                     adapter.filter("");
-                    note_list.clearTextFilter();
+                    doubt_list.clearTextFilter();
                 }
                 else {
                     adapter.filter(newText);
@@ -235,5 +243,4 @@ public class ShowNotes extends Fragment {
         });
 
     }
-
 }

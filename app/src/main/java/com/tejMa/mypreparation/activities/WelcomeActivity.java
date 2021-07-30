@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tejMa.mypreparation.R;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     CardView medium_layout, std_layout;
@@ -22,7 +24,6 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
 
         medium_layout = findViewById(R.id.medium_layout);
@@ -39,8 +40,6 @@ public class WelcomeActivity extends AppCompatActivity {
         if(button.getText().equals("ENGLISH")) lang = "English";
         sharedPreferences.edit().putString("Language", lang).apply();
         Toast toast = Toast.makeText(this, "You can change these settings in\nSettings->Medium & Class", Toast.LENGTH_SHORT);
-        TextView v = toast.getView().findViewById(android.R.id.message);
-        if( v != null) v.setGravity(Gravity.CENTER);
         toast.show();
         startActivity(new Intent(this, Navigation.class));
         finish();

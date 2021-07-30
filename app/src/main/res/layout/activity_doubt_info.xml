@@ -58,6 +58,16 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginHorizontal="20dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/play_quiz_long"
+            android:id="@+id/qureka_ad"/>
+
 </LinearLayout>
 
 </ScrollView>

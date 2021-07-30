@@ -1,164 +1,144 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.review.ReviewInfo;
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.tasks.OnCompleteListener;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.activities.QRScan;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_OK;
+public class Video extends Fragment {
 
-public class Quizzes extends Fragment {
-
-    ListView chap_listView;
-    int REQUEST_CODE = 0;
+    ListView video_list;
     LottieAnimationView coming;
-    DatabaseReference db;
+    DatabaseReference reference;
     public ArrayList<Chapters> demo;
-    LottieAnimationView animationView;
-    private String language, std;
     private ListViewAdapter adapter;
-    private ReviewManager reviewManager;
+    LottieAnimationView animationView;
     SharedPreferences sharedPreferences;
+    String std, lang;
     View view;
-
-    ReviewInfo reviewInfo;
+    private Button notes, videos;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_quizzes, container, false);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        view =  inflater.inflate(R.layout.fragment_notes, container, false);
         ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-        Objects.requireNonNull(actionBar).setTitle(R.string.quiz);
+        Objects.requireNonNull(actionBar).setTitle(R.string.video_lectures);
         setHasOptionsMenu(true);
 
-        //set up views
-        chap_listView = view.findViewById(R.id.listChap);
+        video_list = view.findViewById(R.id.notes);
         coming = view.findViewById(R.id.coming);
+        demo = new ArrayList<>();
+        notes = view.findViewById(R.id.note_button);
+        videos = view.findViewById(R.id.video_button);
         animationView = view.findViewById(R.id.anim);
         animationView.setVisibility(View.VISIBLE);
         coming.setVisibility(View.GONE);
-        demo = new ArrayList<>();
-        demo.clear();
-
-
-        //review manager
-        reviewManager = ReviewManagerFactory.create(getActivity());
-        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-        request.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
-            @Override
-            public void onComplete(@NonNull Task<ReviewInfo> task) {
-                if (task.isSuccessful()) {
-                    // We can get the ReviewInfo object
-                    reviewInfo = task.getResult();
-                    getRating();
-                }
-            }
-        });
-
         adapter = new ListViewAdapter(Objects.requireNonNull(getContext()), R.layout.chap_list_layout, demo);
-        chap_listView.setAdapter(adapter);
-        TextView poor;
-        poor = view.findViewById(R.id.poor);
-
+        video_list.setAdapter(adapter);
 
         //check connection
         if(isConnection()) {
             animationView.setAnimation(R.raw.load);
         } else{
-            new Handler().postDelayed(() -> {
-                poor.setVisibility(View.VISIBLE);
-            },10000);
-
             animationView.setAnimation(R.raw.no_connection);
             coming.setVisibility(View.GONE);
         }
 
-        //get settings
+        notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container,
+                                new ShowNotes()).commit();
+                notes.setTextColor(getResources().getColor(R.color.select));
+                videos.setTextColor(getResources().getColor(R.color.set_text));
+            }
+        });
+
+        videos.setTextColor(getResources().getColor(R.color.select));
+        videos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container,
+                                new Video()).commit();
+                videos.setTextColor(getResources().getColor(R.color.select));
+                notes.setTextColor(getResources().getColor(R.color.set_text));
+            }
+        });
+
+
         sharedPreferences = getActivity().getSharedPreferences("Language", Context.MODE_PRIVATE);
-        language = sharedPreferences.getString("Language", "English");
+        lang = sharedPreferences.getString("Language", "English");
         std = sharedPreferences.getString("Class", "10");
 
-        //get data
-        db = FirebaseDatabase.getInstance().getReference("Quiz/"+std+"/"+language);
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference = FirebaseDatabase.getInstance().getReference("Videos/"+std+"/"+lang);
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() == 0) {
                     animationView.setVisibility(View.INVISIBLE);
                     coming.setVisibility(View.VISIBLE);
-                    poor.setVisibility(View.GONE);
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
         });
 
-        final boolean marathi = language.equals("मराठी");
+        final boolean marathi = lang.equals("मराठी");
 
-        db.addChildEventListener(new ChildEventListener() {
+        reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Chapters chap1;
                 if(marathi){
                     if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" चाचणी");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" तासिका");
                     else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" चाचण्या");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" तासिका");
                 }else {
                     if(dataSnapshot.getChildrenCount() == 1)
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Test");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Lecture");
                     else
-                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Tests");
+                        chap1 = new Chapters(dataSnapshot.getKey(),dataSnapshot.getChildrenCount()+" Lectures");
                 }
                 demo.add(chap1);
                 adapter.notifyDataSetChanged();
-                coming.setVisibility(View.GONE);
                 animationView.setVisibility(View.INVISIBLE);
             }
 
@@ -183,58 +163,20 @@ public class Quizzes extends Fragment {
             }
         });
 
-        //list actions
-        chap_listView.setOnItemClickListener((parent, view, position, id) -> {
+        video_list.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getContext(), Topic.class);
-            Chapters chap = (Chapters) chap_listView.getItemAtPosition(position);
+            Chapters chap = (Chapters) video_list.getItemAtPosition(position);
             String Chapter = chap.getName();
-            intent.putExtra("ChapName", "QuizTEJMA"+std+"TEJMA"+language+"TEJMA"+Chapter);
+            intent.putExtra("ChapName", "VideosTEJMA"+std+"TEJMA"+lang+"TEJMA"+Chapter);
             startActivity(intent);
         });
-
-        //In-app rating
-
-
-        //check updates
-        final AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getActivity());
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-
-        appUpdateInfoTask.addOnSuccessListener(result -> {
-            if (result.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && result.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-
-                try {
-                    appUpdateManager.startUpdateFlowForResult(result, AppUpdateType.IMMEDIATE, getActivity(), REQUEST_CODE);
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
         return view;
-
     }
 
-    private void getRating() {
-        Task<Void> flow = reviewManager.launchReviewFlow(getActivity(), reviewInfo);
-        flow.addOnCompleteListener(task -> {
-            // The flow has finished. The API does not indicate whether the user
-            // reviewed or not, or even whether the review dialog was shown. Thus, no
-            // matter the result, we continue our app flow
-        });
+    public boolean isConnection(){
+        ConnectivityManager connectivityManager = ((ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            if (requestCode != RESULT_OK) {
-                Log.d("TAG", "Update failed" + requestCode);
-            }
-        }
-    }
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
@@ -251,7 +193,6 @@ public class Quizzes extends Fragment {
                 return true;
             }
         });
-
         help.setVisible(false);
 
         SearchView searchView = (SearchView) item.getActionView();
@@ -275,7 +216,7 @@ public class Quizzes extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 if(TextUtils.isEmpty(newText)) {
                     adapter.filter("");
-                    chap_listView.clearTextFilter();
+                    video_list.clearTextFilter();
                 }
                 else {
                     adapter.filter(newText);
@@ -285,11 +226,4 @@ public class Quizzes extends Fragment {
         });
 
     }
-
-    public boolean isConnection(){
-        ConnectivityManager connectivityManager = ((ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }
-
-
 }

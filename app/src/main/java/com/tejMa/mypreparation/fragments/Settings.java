@@ -1,4 +1,4 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,8 +31,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.tejMa.mypreparation.R;
+import com.tejMa.mypreparation.activities.About;
+import com.tejMa.mypreparation.activities.HelpSection;
 import com.tejMa.mypreparation.adapters.ListViewAdapter;
 import com.tejMa.mypreparation.pojo.Chapters;
 
@@ -57,13 +62,17 @@ public class Settings extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_settings, container, false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         Objects.requireNonNull(actionBar).setTitle(R.string.setting_tab);
         setHasOptionsMenu(true);
 
+        AdView mAdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         ListView listView = view.findViewById(R.id.settingView);
 
-        sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("Language", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("Language", Context.MODE_PRIVATE);
 
         demo = new ArrayList<>();
         demo.clear();
@@ -74,10 +83,9 @@ public class Settings extends Fragment {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             final String[] language = {"English", "मराठी"};
             final  String[] classes = {"10", "9", "8"};
-            final String[] mode = {"Light", "Dark", "System Default"};
             if(position == 0)
             {
-                builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.MyDialogStyle);
+                builder = new AlertDialog.Builder(requireContext(), R.style.MyDialogStyle);
                 builder.setItems(language, (dialog, which) -> {
                     medium = language[which];
                     demo.get(position).setDescription(medium);
@@ -93,7 +101,7 @@ public class Settings extends Fragment {
             }
             if(position == 1)
             {
-                builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.MyDialogStyle);
+                builder = new AlertDialog.Builder(requireContext(), R.style.MyDialogStyle);
                 builder.setItems(classes, (dialog, which) -> {
                     std = classes[which];
                     demo.get(position).setDescription(std);
@@ -101,27 +109,27 @@ public class Settings extends Fragment {
                     sharedPreferences.edit().putString("Class", classes[which]).apply();
                 }).show();
             }
+//            else if(position == 2)
+//            {
+//                builder = new AlertDialog.Builder(requireContext(), R.style.MyDialogStyle);
+//                builder.setItems(mode, (dialog, which) -> {
+//                    if(which == 1)
+//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                    else if(which == 0)
+//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                    else if(which == 2)
+//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+//                    theme = mode[which];
+//                    sharedPreferences.edit().putString("Theme", mode[which]).apply();
+//                    demo.get(position).setDescription(theme);
+//                    arrayAdapter.notifyDataSetChanged();
+//                }).show();
+//
+//            }
             else if(position == 2)
             {
-                builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.MyDialogStyle);
-                builder.setItems(mode, (dialog, which) -> {
-                    if(which == 1)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    else if(which == 0)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    else if(which == 2)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                    theme = mode[which];
-                    sharedPreferences.edit().putString("Theme", mode[which]).apply();
-                    demo.get(position).setDescription(theme);
-                    arrayAdapter.notifyDataSetChanged();
-                }).show();
 
-            }
-            else if(position == 3)
-            {
-
-                final Dialog builder = new Dialog(Objects.requireNonNull(getContext()));
+                final Dialog builder = new Dialog(requireContext());
                 builder.setContentView(R.layout.alert_dialog);
                 final EditText text = builder.findViewById(R.id.dialog_text);
                 final EditText name = builder.findViewById(R.id.name);
@@ -143,12 +151,12 @@ public class Settings extends Fragment {
                 negative.setOnClickListener(v -> builder.cancel());
                 builder.show();
             }
-            else if(position == 4)
+            else if(position == 3)
             {
                 startActivity(new Intent(getContext(), About.class));
             }
-            else if (position == 5){
-                Uri uri = Uri.parse("market://details?id=" + Objects.requireNonNull(getContext()).getPackageName());
+            else if (position == 4){
+                Uri uri = Uri.parse("market://details?id=" + requireContext().getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
@@ -159,10 +167,10 @@ public class Settings extends Fragment {
                     startActivity(goToMarket);
                 } catch (ActivityNotFoundException e) {
                     startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + Objects.requireNonNull(getContext()).getPackageName())));
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + requireContext().getPackageName())));
                 }
             }
-            else if (position == 6){
+            else if (position == 5){
                 shareIt();
             }
         });
@@ -183,22 +191,20 @@ public class Settings extends Fragment {
     private void getStrings(){
         medium = sharedPreferences.getString("Language", "English");
         std = sharedPreferences.getString("Class", "10");
-        theme = sharedPreferences.getString("Theme", "Light");
         feed = "";
         contact = "";
         rate = "";
         share = "";
-        values = new String[]{medium, std, theme, feed, contact, rate, share};
+        values = new String[]{medium, std, feed, contact, rate, share};
         settings = new String[]{
                 getResources().getString(R.string.medium),
                 getResources().getString(R.string.std),
-                getResources().getString(R.string.theme),
                 getResources().getString(R.string.feedback_and_suggestion),
                 getResources().getString(R.string.contactus),
                 getResources().getString(R.string.rate),
                 getResources().getString(R.string.share)};
-        for(int i=0; i<7; i++){
-            Chapters chapters = new Chapters(settings[i], values[i]);
+        for(int i=0; i<settings.length; i++){
+            Chapters chapters = new Chapters(settings[i], values[i], -1);
             demo.add(chapters);
             arrayAdapter.notifyDataSetChanged();
         }

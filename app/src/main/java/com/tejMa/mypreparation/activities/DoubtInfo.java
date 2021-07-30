@@ -1,13 +1,16 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -22,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tejMa.mypreparation.R;
 import com.tejMa.mypreparation.adapters.CustomVolleyRequest;
 
 import java.util.Locale;
@@ -76,6 +80,20 @@ public class DoubtInfo extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+        findViewById(R.id.qureka_ad).setOnClickListener(v -> {
+            String urlString = "https://312.win.qureka.com";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setPackage("com.android.chrome");
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null);
+                startActivity(intent);
             }
         });
 

@@ -1,21 +1,22 @@
-package com.tejMa.mypreparation;
+package com.tejMa.mypreparation.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.animation.Animator;
-import android.content.DialogInterface;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -24,8 +25,16 @@ import android.view.animation.LinearInterpolator;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.tejMa.mypreparation.R;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -36,13 +45,18 @@ public class WebShow extends AppCompatActivity {
     String url;
     WebView webView;
     TextView timer;
+    int back = 0;
     boolean doubleBackToExitPressedOnce = false;
-    LottieAnimationView animationView;
+    LottieAnimationView animationView, load;
     Animation anim;
     CountDownTimer countDownTimer;
     SharedPreferences sharedPreferences;
     String lang;
     String remaining;
+
+    private String TAG = "Ads";
+    private InterstitialAd mInterstitialAd;
+    private AdRequest adRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +69,60 @@ public class WebShow extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
         timer = findViewById(R.id.timer);
         animationView = findViewById(R.id.anim);
+        load = findViewById(R.id.loading);
+
+
+        adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(WebShow.this,"ca-app-pub-3015278233978080/8759945120", adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                mInterstitialAd = interstitialAd;
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        // Called when fullscreen content is dismissed.
+                        finish();
+                        Log.d("TAG", "The ad was dismissed.");
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        finish();
+                        Log.d("TAG", "The ad failed to show.");
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+
+                        mInterstitialAd = null;
+                        Log.d("TAG", "The ad was shown.");
+                    }
+                });
+                Log.i(TAG, "onAdLoaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                Log.i(TAG, loadAdError.getMessage());
+                mInterstitialAd = null;
+            }
+        });
+
+
+        findViewById(R.id.ad).setOnClickListener(v -> {
+            String urlString = "https://312.win.qureka.com";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setPackage("com.android.chrome");
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null);
+                startActivity(intent);
+            }
+        });
 
         sharedPreferences = getSharedPreferences("Language", MODE_PRIVATE);
         lang = sharedPreferences.getString("Language", "English");
@@ -71,20 +139,8 @@ public class WebShow extends AppCompatActivity {
         anim = blinkAnim();
 
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new AppWebViewClients(load));
         webView.loadUrl(url);
-        webView.setWebViewClient(new WebViewClient(){
-            public boolean shouldOverrideUrlLoading(WebView viewx, String urlx) {
-                viewx.loadUrl(urlx);
-                if(topicDetail[0].equals("Exam") || topicDetail[0].equals("परीक्षा")) {
-                    animationView.setVisibility(View.VISIBLE);
-                    countDownTimer.cancel();
-                    timer.setText(R.string.test_finish);
-                    timer.setTextColor(getResources().getColor(R.color.online));
-                }
-                return false;
-            }
-        });
-
 
         if(topicDetail[0].equals("Exam") || topicDetail[0].equals("परीक्षा")){
             actionBar.setDisplayHomeAsUpEnabled(false);
@@ -115,7 +171,7 @@ public class WebShow extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if(remaining.equals("0"))
-                    finish();
+                    onBackPressed();
                 else
                     animationView.setVisibility(View.GONE);
             }
@@ -169,32 +225,23 @@ public class WebShow extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        super.onBackPressed();
+        onBackPressed();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if(topicDetail[0].equals("Exam") || topicDetail[0].equals("परीक्षा")){
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
-            alertDialogBuilder
-                    .setTitle("Sure you want to exit?")
-                    .setMessage("Once finished you cannot attempt the test again.")
-                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    })
-                    .show();
-        } else
-            super.onBackPressed();
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(WebShow.this);
+        } else {
+            if(back==1)
+                finish();
+            else
+                Toast.makeText(this, "Press back again", Toast.LENGTH_SHORT).show();
+            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+            back++;
+        }
+
     }
 
 
@@ -209,4 +256,29 @@ public class WebShow extends AppCompatActivity {
         sharedPreferences.edit().putString("Language", langu).apply();
     }
 
+    public class AppWebViewClients extends WebViewClient {
+        private LottieAnimationView animationView;
+
+        public AppWebViewClients(LottieAnimationView animationView) {
+            this.animationView=animationView;
+            animationView.setVisibility(View.VISIBLE);
+        }
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            if(topicDetail[0].equals("Exam") || topicDetail[0].equals("परीक्षा")) {
+                animationView.setVisibility(View.VISIBLE);
+                countDownTimer.cancel();
+                timer.setText(R.string.test_finish);
+                timer.setTextColor(getResources().getColor(R.color.online));
+            }
+            return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            animationView.setVisibility(View.GONE);
+        }
+    }
 }
